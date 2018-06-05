@@ -1,41 +1,35 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var express = require('express'),
+    steam   = require('./index');
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.use(require('express-session')({ resave: false, saveUninitialized: false, secret: 'a secret' }));
+app.use(steam.middleware({
+	realm: 'http://localhost:5000/',
+	verify: 'http://localhost:5000/verify',
+	apiKey: "9EB17BB39112DD9EAE9668F928E9EB56"}
+));
 
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.get('/', function(req, res) {
+	console.log(req.user)
+	res.send(req.user == null ? 'not logged in' : 'hello ' + req.user.username).end();
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.get('/authenticate', steam.authenticate(), function(req, res) {
+	res.redirect('/');
 });
 
-module.exports = app;
+app.get('/verify', steam.verify(), function(req, res) {
+	res.send(req.user).end();
+});
+
+app.get('/logout', steam.enforceLogin('/'), function(req, res) {
+	req.logout();
+	res.redirect('/');
+});
+
+app.listen(5000);
+console.log('listening');
