@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const { LoginGithub } = require('../controllers/user_controller')
-const steam   = require('../controllers/steam_controller');
+const { LoginGithub, LoginSteam } = require('../controllers/user_controller')
+const steam = require('../middlewares/steam_auth');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -10,8 +10,9 @@ router.get('/', function(req, res, next) {
 
 router.post('/', LoginGithub)
 router.get('/steam/authenticate', steam.authenticate(), function(req, res) {
-	res.redirect('/');
+	console.log('steam login');
 });
 
+router.get('/verify', steam.verify(), LoginSteam)
 
 module.exports = router
