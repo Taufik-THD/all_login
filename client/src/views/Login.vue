@@ -1,16 +1,16 @@
 <template>
   <div>
-    <g-signin-button
+    <!-- <g-signin-button
     :params="googleSignInParams"
     @success="onSignInSuccess"
     @error="onSignInError">
     Sign in with Google
   </g-signin-button>
 
-  <button @click="loginfb()" class="btn btn-info">Login with Facebook</button>
+  <button @click="loginfb()" class="btn btn-info">Login with Facebook</button> -->
   </div>
 </template>
- 
+
 <script>
 import axios from 'axios'
 
@@ -35,7 +35,7 @@ export default {
       }(document, 'script', 'facebook-jssdk'))
       window.fbAsyncInit = function () {
         window.FB.init({
-          appId: '1369761109791179',
+          appId: '223165648453545',
           cookie: true,
           xfbml: true,
           version: 'v2.8'
@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     onSignInSuccess (googleUser) {
-      const profile = googleUser.getBasicProfile() 
+      const profile = googleUser.getBasicProfile()
       console.log('ID: ' + profile.getId())
       console.log('Name: ' + profile.getName())
       console.log('Image URL: ' + profile.getImageUrl())
@@ -84,8 +84,8 @@ export default {
     }
   }
 }
-</script> 
- 
+</script>
+
 <style>
 .g-signin-button {
   /* This is where you control how the button looks. Be creative! */
@@ -96,4 +96,4 @@ export default {
   color: #fff;
   box-shadow: 0 3px 0 #0f69ff;
 }
-</style> 
+</style>

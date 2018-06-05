@@ -33,15 +33,6 @@ module.exports.middleware = function(opts)
 	};
 }
 
-module.exports.enforceLogin = function(redirect)
-{
-	return function(req, res, next) {
-		if(!req.user)
-			return res.redirect(redirect);
-		next();
-	};
-}
-
 module.exports.verify = function()
 {
 	return function(req, res, next) {
@@ -82,7 +73,7 @@ module.exports.authenticate = function()
 			}
 			if(!authURL)
 				return next('Authentication failed.');
-				res.redirect(authURL)
+        res.status(200).json(authURL)
 				//  res.redirect('http://localhost:5000')
 		});
 	};
